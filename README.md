@@ -33,7 +33,8 @@ Note: Many improvements were done after recording this video.
     yarn
     ```
 
-3. Open PHPMyAdmin, create a DB & import `db.sql` file.
+3. Open PHPMyAdmin, create a DB & import `db.sql` file. 
+   *Aaron note for dustin: bug fixing against mySql 8.0.11, a few issues with order by's not in select statements and missing backticks from table names)*
 4. Create a `.env` file and insert the following code. Replace values with yours!!
 
     ```javascript
