@@ -6,8 +6,9 @@ const app = require('express').Router(),
 
 // GET USER GROUPS [REQ = USER]
 app.post('/get-user-groups', async (req, res) => {
+  // have an issue here
   let _groups = await db.query(
-      'SELECT groups.group_id, groups.name, groups.admin, group_members.member, group_members.joined_group FROM group_members, groups WHERE group_members.member = ? AND group_members.group_id = groups.group_id ORDER BY groups.created DESC',
+      'SELECT groups.group_id, groups.name, groups.admin, groups.created, group_members.member, group_members.joined_group FROM `group_members`, `groups` WHERE group_members.member = ? AND group_members.group_id = groups.group_id ORDER BY groups.created DESC',
       [req.body.user]
     ),
     groups = []

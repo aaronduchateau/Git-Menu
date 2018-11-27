@@ -63,11 +63,11 @@ app.post('/search-instagram', async (req, res) => {
     ),
     users = [],
     _groups = await db.query(
-      `SELECT group_id, name FROM groups WHERE name LIKE "%${value}%" ORDER BY group_id DESC LIMIT 7`
+      `SELECT group_id, name FROM \`groups\` WHERE name LIKE "%${value}%" ORDER BY group_id DESC LIMIT 7`
     ),
     groups = [],
     hashtags = await db.query(
-      `SELECT DISTINCT hashtag FROM hashtags WHERE hashtag LIKE "%${value}%" ORDER BY hashtag_time DESC LIMIT 10`
+      `SELECT DISTINCT hashtag, hashtag_time FROM \`hashtags\` WHERE hashtag LIKE "%${value}%" ORDER BY hashtag_time DESC LIMIT 10`
     )
 
   for (let u of _users) {

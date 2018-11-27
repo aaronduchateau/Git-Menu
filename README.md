@@ -19,6 +19,7 @@ Note: Many improvements were done after recording this video.
 
 # Requirements
 1. [GraphicsMagick](http://www.graphicsmagick.org/) for Image-processing.
+    brew install graphicsmagick globally in addition to creating the node module.
 
 # Usage
 1. Fork the repo and then clone it or download it.

@@ -10,7 +10,7 @@ const app = require('express').Router(),
 app.post('/get-users-hashtags', async (req, res) => {
   let id = await User.getId(req.body.username),
     hashtags = await db.query(
-      'SELECT DISTINCT hashtag FROM hashtags WHERE user=? ORDER BY hashtag_time LIMIT 20',
+      'SELECT DISTINCT hashtag, hashtag_time FROM hashtags WHERE user=? ORDER BY hashtag_time LIMIT 20',
       [id]
     )
   res.json(hashtags)
@@ -19,14 +19,14 @@ app.post('/get-users-hashtags', async (req, res) => {
 // GET GROUP HASHTAGS [REQ = GROUP_ID]
 app.post('/get-group-hashtags', async (req, res) => {
   let groupPosts = await db.query(
-      'SELECT post_id FROM posts WHERE group_id=? ORDER BY post_time DESC LIMIT 20',
+      'SELECT post_id, post_time FROM posts WHERE group_id=? ORDER BY post_time DESC LIMIT 20',
       [req.body.group_id]
     ),
     hashtags = []
 
   for (let post of groupPosts) {
     let hash = await db.query(
-      'SELECT DISTINCT hashtag FROM hashtags WHERE post_id=? ORDER BY hashtag_time DESC',
+      'SELECT DISTINCT hashtag, hashtag_time FROM hashtags WHERE post_id=? ORDER BY hashtag_time DESC',
       [post.post_id]
     )
     hashtags = [...hash, ...hashtags]
