@@ -27,6 +27,7 @@ const SideBar = ({ uc, un }) => {
         <ul className="m_n_ul">
           <SidebarLink link={profile} label={`@${username}`} />
           <SidebarLink link="/" label="Home" />
+          <SidebarLink link="/recipies" label="My Recipies" />
           <SidebarLink link="/explore" label="Explore" />
           <SidebarLink
             link="/notifications"

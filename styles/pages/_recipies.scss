@@ -1,0 +1,89 @@
+// EXPLORE
+.recipies_ml {
+  .add_recipie_container {
+    padding: 12px 10px 10px 10px;
+    border: 1px solid #f7f5f5;
+    color: #1b2733;
+    background: #fff;
+    border-radius: 4px;
+  }
+
+  .meal_option {
+    position: relative;
+    top: -100px;
+    left: 507px;
+  }
+
+  .pro_banner_meal {
+      border: 1px solid #f7f5f5;
+      color: #1b2733;
+      background: #fff;
+      border-radius: 4px;
+      padding: 10px;
+  }
+
+  .subtle-hr {
+    border: 1px solid #f7f5f5;
+  }
+
+  .recipie_img {
+    float: right;
+    width: 275px;
+    border: 1px solid #f7f5f5;
+    border-radius: 4px;
+    margin-left: 5px;
+    margin-top: 4px;
+  }
+
+  .description_p {
+    padding-top: 10px;
+    padding-right: 10px;
+    padding-left: 5px;
+    padding-bottom: 10px;
+  }
+
+  .ingredient {
+    margin-left: 5px;
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .recipie_stars {
+    color: #1b9be9;
+    font-size: 16px;
+  }
+
+  .cook_prep_holder {
+    color: #66757f;
+    .cook_prep_holder_divide {
+      color: #f7f5f5;
+    }
+  }
+
+  .holder {
+    /* Clip edges, as some of the lines don't terminate nicely. */
+      overflow: hidden;
+      position: relative;
+      width: 100%;
+      height: 10px;
+  }
+
+  .line {
+      position: absolute;
+      width: 800px;
+      /* Height set to clip correctly basically background-size/2 + line width */
+      height: 6px;
+      opacity: .7;
+  }
+  .line1 {
+      background: linear-gradient(45deg, transparent, transparent 49%, grey 49%, transparent 51%);
+  }
+  .line2 {
+      background: linear-gradient(-45deg, transparent, transparent 49%, grey 49%, transparent 51%);
+  }
+  .line {
+      /* Must be after background definition... */
+      background-size: 10px 10px;
+  }
+
+}

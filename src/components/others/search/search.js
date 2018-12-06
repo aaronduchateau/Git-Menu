@@ -49,7 +49,7 @@ export default class Search extends Component {
       <div>
         <div className="search_box">
           <TextInput
-            placeholder="Search Instagram"
+            placeholder="Search MealHub"
             autoFocus
             value={value}
             valueChange={this.search}

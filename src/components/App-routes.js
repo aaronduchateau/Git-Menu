@@ -8,6 +8,7 @@ import Notifications from './notifications/notifications'
 import EditProfile from './edit-profile/edit-profile'
 import ViewPost from './post/view-post/view-post'
 import Explore from './explore/explore'
+import Recipies from './recipies/recipies'
 import Settings from './settings/settings'
 import Group from './group/group'
 import Messages from './messages/messages'
@@ -27,6 +28,7 @@ const AppRoutes = () => (
       <Route path="/edit-profile" component={EditProfile} />
       <Route path="/post/:post_id" component={ViewPost} />
       <Route path="/explore" component={Explore} />
+      <Route path="/recipies" component={Recipies} />
       <Route path="/settings" component={Settings} />
       <Route path="/group/:grp_id" component={Group} />
       <Route path="/messages" component={Messages} />
