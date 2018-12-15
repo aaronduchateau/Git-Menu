@@ -1,5 +1,5 @@
 import React from 'react'
-import { string, func, oneOf, bool } from 'prop-types'
+import { string, func, oneOf, bool, PropTypes } from 'prop-types'
 
 const TextInput = ({ type, placeholder, value, valueChange, ...props }) => (
   <input
@@ -24,7 +24,7 @@ TextInput.defaultProps = {
 TextInput.propTypes = {
   type: oneOf(['text', 'email', 'password']),
   placeholder: string.isRequired,
-  value: string.isRequired,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   valueChange: func.isRequired,
   maxLength: string,
   disabled: bool,

@@ -13,13 +13,13 @@ const RecipiesNav = ({ url }) => {
     <Fragment>
       <ul>
         <li>
-          <NavLink to={`${url}`} exact {...commonProps}>
-            My Recipies
+          <NavLink to={`${url}/add-recipie`} {...commonProps}>
+            Add New Recipie
           </NavLink>
         </li>
         <li>
-          <NavLink to={`${url}/add-recipie`} {...commonProps}>
-            Add New Recipie
+          <NavLink to={`${url}`} exact {...commonProps}>
+            My Recipies
           </NavLink>
         </li>
         <li>
