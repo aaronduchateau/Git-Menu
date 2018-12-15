@@ -33,7 +33,7 @@ app.post('/user/login', async (req, res) => {
       res.json({ mssg: array })
     } else {
       let [{ userCount, id, password, email_verified }] = await db.query(
-        'SELECT COUNT(id) as userCount, id, password, email_verified from users WHERE username=? LIMIT 1',
+        'SELECT COUNT(id) as userCount, id, password, email_verified from users WHERE username=? GROUP BY id LIMIT 1',
         [rusername]
       )
 
