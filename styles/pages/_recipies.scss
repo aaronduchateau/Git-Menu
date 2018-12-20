@@ -96,6 +96,7 @@
 
   /* add recipie starts here */
   .add_recipie_container {
+    color: #66757f;
 
     .add_title_container{
       margin-top: 10px;
@@ -156,7 +157,7 @@
       padding-top: 5px;
       font-size: 14px;
       color: #3d464d;
-      width: 58px;
+      width: 133px;
       border-bottom: 1px solid white;
       position: relative;
       max-height: 20px;
@@ -215,6 +216,12 @@
       margin-left: 15px;
       margin-right: 10px;
       min-height: 47px;
+    }
+
+    .ing_container_view {
+        margin-left: 15px;
+        margin-right: 10px;
+        min-height: 54px;
     }
 
     .prep_cook_container {
@@ -307,6 +314,67 @@
       float: left;
       margin-right: 15px;
       color: #eee;
+    }
+
+    @keyframes slideDown{
+      to {
+        transform: translateY(-100%);
+        max-height: 0px;
+        opacity: 0;
+      }
+      from {
+        transform: translateY(0);
+        max-height: 93px;
+        opacity: 1;
+      }
+    }
+
+    .ing_fade_out {
+      overflow: hidden;
+      -webkit-animation-delay:0s;
+        -webkit-animation-name: slideDown;
+        -webkit-animation-timing-function: ease-out;
+        -webkit-animation-duration: 0.2s;
+        -webkit-animation-iteration-count: 1;
+        -webkit-animation-fill-mode: forwards;
+    }
+
+    .ing_parent_cont {
+      overflow: hidden;
+      max-height: 93px;
+    }
+
+    .ing_parent_cont_preview {
+      overflow: hidden;
+      max-height: 93px;
+    }
+
+
+    .p_do{
+      float: right;
+      margin-top: 2px;
+      margin-bottom: 2px;
+
+      & > div{
+        color: $d_light;
+        position: relative;
+        margin-right: 9px;
+        display: inline-block;
+
+        & > span{
+          color: $d_light;
+          position: relative;
+          display: inline-block;
+          cursor: pointer;
+
+          &:hover {
+            color: $dark;
+            transform: scale(1.1);
+          }
+        }
+
+      }
+
     }
 
 
