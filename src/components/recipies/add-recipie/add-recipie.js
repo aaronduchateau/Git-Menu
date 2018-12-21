@@ -16,6 +16,7 @@ import Direction from '../direction'
 import BioInput from '../../edit-profile/bio-input'
 import TextInput from '../../others/input/text'
 import StarRating from'../star-rating'
+import TextArea from '../../others/input/textArea'
 
 const DescriptionPreviewText = "Ex: My mother was a good cook and a great baker; her desserts were so delicious that my father and my older brother wrote a song about them, to the tune of Dvorák's Humoresque. It began, 'You may think us quite disgusting / We eat though our belly's busting / Mother, pass another piece of pie.'";
 
@@ -43,7 +44,7 @@ class AddRecipie extends Component {
       {val: '', previewText: "Ex: 1 pinch ground black pepper", key: guid()},
     ],
     directions: [
-      {val: '', previewText: "Ex: Place the onion, chili beans, black beans, beer, and diced tomatoes in a slow cooker", key: guid()},
+      {val: '', previewText: "Ex: Place the onion, chili beans, black beans, corn, tomato sauce, beer, and diced tomatoes in a slow cooker. Add taco seasoning, and stir to blend. Lay chicken breasts on top of the mixture, pressing down slightly until just covered by the other ingredients. Set slow cooker for low heat, cover, and cook for 5 hours.", key: guid()},
       {val: '', previewText: "Ex: Add taco seasoning, and stir to blend.", key: guid()},
       {val: '', previewText: "Ex: Stir the shredded chicken back into the soup, and continue cooking for 2 hours", key: guid()},
     ],
@@ -153,6 +154,13 @@ class AddRecipie extends Component {
             style={{ marginTop: 0 }}
           >
             <div className="add_recipie_container">
+              <div class="version_header">
+                You are creating recipe <b>v1.0</b>&nbsp;
+               <PrimaryButton
+                label="Learn More"
+                extraClass="version_but_info"
+                />
+              </div>  
               <div className="add_recipie_half_container edit_main">
                 <div className="space5" />
                 <div className="edit_un_div">
@@ -366,16 +374,16 @@ class AddRecipie extends Component {
                 <div className="edit_un_div">
                 {this.state.directions.map((item, i) => {
                   return (
-                  <div key={item.key} className="ing_parent_cont">
+                  <div key={item.key} className="ing_parent_cont ing_desc_cont">
                     <div className={item.key === fadeOutKey ? 'ing_fade_out' : ''}>
                     <ExpanseDown duration="200ms">
-                      <span className="edit_span">{'Instruction ' + (i + 1) +':'}</span>
-                      <TextInput
-                        type="text"
-                        placeholder="One of this recipie's ingredients"
+                      <span className="edit_span">{'Directions ' + (i + 1) +':'}</span>
+                      <TextArea
+                        placeholder="The Directions for this step..."
                         value={item.val}
                         valueChange={e => this.listChange('directions', i, e)}
-                        maxLength="100"
+                        maxLength="2000"
+                        className="edit_directions_textarea"
                       />
                       <div className="p_do">
                         <div className="">
@@ -415,11 +423,19 @@ class AddRecipie extends Component {
                   <div className="space20" />
                   {this.state.directions.map((item, i) => {
                     return (
-                      <div key={item.key.substring(1, 15)} className="ing_parent_cont_preview">
+                      <div key={item.key.substring(1, 15)} className="ing_parent_cont_preview description_parent_cont_preview">
                         <div className={item.key === fadeOutKey ? 'ing_fade_out' : ''}>
                           <ExpanseDown duration="200ms">
-                            <div className="ing_container_view">
-                              <h3><i className="fas fa-check"></i> {item.val || item.previewText}</h3>
+                            <div className="ing_container_view description_container_view">
+                              <h3 style={{float: 'left', marginRight: '5px'}}>
+                                <span className="fa-stack">
+                                  <span className="fas fa-circle-notch fa-stack-2x"></span>
+                                  <strong className="fas fa-stack-1x">
+                                      {i + 1}    
+                                  </strong>
+                                  </span>
+                              </h3>
+                              {item.val || item.previewText}
                             </div>
                             {i + 1 !== this.state.directions.length &&
                               <div>

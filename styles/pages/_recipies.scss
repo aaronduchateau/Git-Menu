@@ -156,7 +156,7 @@
       padding-bottom: 3px;
       padding-top: 5px;
       font-size: 14px;
-      color: #3d464d;
+      //color: #3d464d;
       width: 133px;
       border-bottom: 1px solid white;
       position: relative;
@@ -222,6 +222,10 @@
         margin-left: 15px;
         margin-right: 10px;
         min-height: 54px;
+    }
+
+    .description_container_view {
+        min-height: 102px;
     }
 
     .prep_cook_container {
@@ -347,6 +351,34 @@
     .ing_parent_cont_preview {
       overflow: hidden;
       max-height: 93px;
+    }
+
+    .description_parent_cont_preview {
+      overflow: hidden;
+      max-height: 154px;
+    }
+
+    .ing_desc_cont {
+      max-height: 145px;
+    }
+
+    textarea.edit_directions_textarea {
+      height: 76px;
+    }
+
+    .version_header {
+      float: right;
+      margin-top: -56px;
+      border: 1px solid #eee;
+      border-radius: 0px 4px 4px 4px;
+      padding: 8px 2px 8px 15px;
+    }
+
+    .version_but_info {
+      background: #6ae03b!important;
+      color: white!important;
+      border: 1px solid #6ae03b!important;
+      padding: 5px 15px;
     }
 
 
