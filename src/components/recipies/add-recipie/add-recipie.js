@@ -17,6 +17,7 @@ import BioInput from '../../edit-profile/bio-input'
 import TextInput from '../../others/input/text'
 import StarRating from'../star-rating'
 import TextArea from '../../others/input/textArea'
+import { addRecipe } from '../../../utils/recipe-interact-utils'
 
 const DescriptionPreviewText = "Ex: My mother was a good cook and a great baker; her desserts were so delicious that my father and my older brother wrote a song about them, to the tune of Dvorák's Humoresque. It began, 'You may think us quite disgusting / We eat though our belly's busting / Mother, pass another piece of pie.'";
 
@@ -32,6 +33,7 @@ const guid = () => {
 class AddRecipie extends Component {
   state = {
     loading: true,
+    key: guid(),
     title: '',
     description: '',
     starRating: 0,
@@ -51,7 +53,26 @@ class AddRecipie extends Component {
     fadeOutKey: ''
   }
 
-  componentDidMount = () => this.props.dispatch(getUsersToExplore())
+  componentDidMount = () => {
+    this.props.dispatch(getUsersToExplore());
+    window.addEventListener('scroll', this.handleScroll);
+  }
+
+  componentWillUnmount = ()=> {
+    window.removeEventListener('scroll', this.handleScroll);
+  }
+
+  handleScroll = (event) => {
+      if (window.scrollY > 65){
+        if(!this.state.hasScrolled){
+          this.setState({hasScrolled: true});
+        }
+      } else {
+        if(this.state.hasScrolled){
+          this.setState({hasScrolled: false});
+        }
+      }
+  }
 
   componentWillReceiveProps = () => this.setState({ loading: false })
 
@@ -59,7 +80,6 @@ class AddRecipie extends Component {
     e.preventDefault();
     alert("title click");
   }
-
 
   handleStarRate = (n) => {
     this.setState({starRating: n});
@@ -129,16 +149,54 @@ class AddRecipie extends Component {
         let minsDecimal = parseInt(splitArr[1]) / 100;
         baseMins = Math.round(minsDecimal * 60);
       } else {
-        baseHours = totalDecimalTime;
+        baseHours = parseInt(totalDecimalTime);
         baseMins = 0;
       }
       this.setState({'totalTime': {'hrs': baseHours, 'mins': baseMins} });
     }); 
   }
 
+  addRecipeLocal = (e) => {
+    e.preventDefault();
+    addRecipe(this.state);
+  }
+
+  stepProgressInd = (num) => {
+    switch(num) {
+      case 1:
+        return Boolean(this.state.title.length > 5);
+        break;
+      case 2:
+        return Boolean(this.state.prepTime.hrs && this.state.prepTime.mins && this.state.cookTime.hrs && this.state.cookTime.mins);
+        break;
+      case 3:
+        return Boolean(this.state.description.length > 1);
+      case 4:
+        var found = false;
+        for(var i = 0; i < this.state.ingredients.length; i++) {
+            if (this.state.ingredients[i].val.length > 3) {
+                found = true;
+                break;
+            }
+        }
+        return found;
+      case 5:
+        var found = false;
+        for(var i = 0; i < this.state.directions.length; i++) {
+            if (this.state.directions[i].val.length > 3) {
+                found = true;
+                break;
+            }
+        }
+        return found;
+      default:
+        return false;
+    }
+  }
+
   render() {
     let { users } = this.props,
-      { loading, title, description, starRating, cookTime, prepTime, totalTime, fadeOutKey } = this.state;
+      { loading, title, description, starRating, cookTime, prepTime, totalTime, fadeOutKey, hasScrolled } = this.state;
       console.log('test');
       console.log(Array.isArray(this.state.ingredients));
 
@@ -161,57 +219,101 @@ class AddRecipie extends Component {
                 extraClass="version_but_info"
                 />
               </div>  
+              {hasScrolled && <div className="progress_spacer_left" />}
+
+
+              <div className={'progress_footer ' + (hasScrolled ? 'progress_footer_scrolled' : '')}>  
+                <div className="exp_nav">
+                  <ul>
+                    <li>
+                      <a className={'exp_nav_link' + (this.stepProgressInd(1) ? ' exp_nav_active' : '')} aria-current="false" href="/recipies/add-recipie">
+                        1. Title
+                      </a>
+                    </li>
+                    <li>
+                      <a className={'exp_nav_link' + (this.stepProgressInd(2) ? ' exp_nav_active' : '')} aria-current="false" href="/recipies">
+                        2. Cook & Prep 
+                      </a>
+                    </li>
+                    <li>
+                      <a className={'exp_nav_link' + (this.stepProgressInd(3) ? ' exp_nav_active' : '')}aria-current="false" href="/recipies/discover-recipies">
+                        3. Description
+                      </a>
+                    </li>
+                     <li>
+                      <a className={'exp_nav_link' + (this.stepProgressInd(4) ? ' exp_nav_active' : '')} aria-current="false" href="/recipies/discover-recipies">
+                        4. Ingredients
+                      </a>
+                    </li>
+                     <li>
+                      <a className={'exp_nav_link' + (this.stepProgressInd(5) ? ' exp_nav_active' : '')} aria-current="false" href="/recipies/discover-recipies">
+                        5. Directions
+                      </a>
+                    </li>
+                    <li>
+                      <PrimaryButton
+                        label="Publish This Recipe"
+                        extraClass="publish_but"
+                        onClick={this.addRecipeLocal} 
+                      />
+                    </li>
+                  </ul>
+                </div>
+              </div>  
+
               <div className="add_recipie_half_container edit_main">
                 <div className="space5" />
                 <div className="edit_un_div">
-                  <span className="edit_span">Title</span>
                   <TextInput
                     type="text"
-                    placeholder="A title for your recipie"
+                    placeholder="A title for your recipe..."
                     value={title}
                     valueChange={e => this.change('title', e)}
                     maxLength="100"
                   />
                 </div>
                 <div className="edit_un_div">
-                  <span className="edit_span">Be the first to rate your recipie!</span>
-                  <StarRating starRating={starRating} handleStarRate={this.handleStarRate}/>
-                  
+                  <div className="space15" />
+                  <span className="starHolderExternal" tooltip='Be the first to rate your recipe!' tooltip-position='right' >
+                    <StarRating starRating={starRating} handleStarRate={this.handleStarRate}/>
+                  </span>
                 </div>
                 <div className="edit_un_div">
-                  <div className="prep_cook_container">
-                    <span className="edit_span">Prep Time:</span>
+                  <div className="prep_cook_container" tooltip='Prep Time' tooltip-position='left' tooltip-small='true'>
+                    <img className="prep_icon_tip" src="/images/chop.png" />
                     <TextInput
                       type="text"
-                      placeholder="0"
+                      placeholder="Hr"
                       value={prepTime.hrs}
                       valueChange={e => this.changeCookorPrepTime('prepTime','hrs', e)}
                       maxLength="2"
-                    /> Hours &nbsp;
+                      style={{textAlign:'right'}}
+                    /> <span style={{marginRight:'3px'}}>:</span> 
                     <TextInput
                       type="text"
-                      placeholder="0"
+                      placeholder="Mn"
                       value={prepTime.mins}
                       valueChange={e => this.changeCookorPrepTime('prepTime','mins', e)}
                       maxLength="2"
-                    /> Mins 
+                    />  
                   </div>  
-                  <div className="prep_cook_container">
-                    <span className="edit_span">Cook Time:</span>
+                  <div className="prep_cook_container" tooltip='Cook Time' tooltip-position='left' tooltip-small='true'>
+                    <img className="prep_icon_tip cook_icon_tip" src="/images/cooking.png" tooltip='Prep Time' tooltip-position='left' tooltip-small='true' />
                     <TextInput
                       type="text"
-                      placeholder="0"
+                      placeholder="Hr"
                       value={cookTime.hrs}
                       valueChange={e => this.changeCookorPrepTime('cookTime','hrs', e)}
                       maxLength="2"
-                    /> Hours &nbsp;
+                      style={{textAlign:'right'}}
+                    /> <span style={{marginRight:'3px'}}>:</span>
                     <TextInput
                       type="text"
-                      placeholder="0"
+                      placeholder="Mn"
                       value={cookTime.mins}
                       valueChange={e => this.changeCookorPrepTime('cookTime','mins', e)}
                       maxLength="2"
-                    /> Mins 
+                    />  
                   </div>
                   <div className="clear" />
                 </div>
@@ -220,68 +322,24 @@ class AddRecipie extends Component {
                   change={this.change} 
                   maxLength="2000"
                   keyValue='description'
-                  label='Description'
-                  placeholder='The history, description, or context of your recipie!'
+                  label='&nbsp;'
+                  placeholder='A short description of your recipe...'
                 />
               </div>
-              <div className="add_recipie_half_container">
-                <div className="white_tab">
-                  Basic Info Preview:
-                </div>
+
+              <div className={'add_recipie_half_container ' + (hasScrolled ? 'add_photo_holder' : 'add_photo_pre_scroll')}>
                 <div className="white_container">
-                  <div className="space20" />
-                  <div className="title_container_view">
-                    <h3>{this.state.title || "Ex: Vegi Lasagna with Pesto"}</h3>
+                  <div className="choose_img_holder">
+                    <div className="space50" />
+                    <h3>Add a picture of your recipe</h3>
+                    <div className="space50" />
+                    <PrimaryButton
+                      label="Choose an Image"
+                      extraClass="choose_img_btn"
+                      onClick={this.addRecipeLocal} 
+                    />
+                    <div className="space50" />
                   </div>
-                  <div className="space10" />
-                  <div className="holder">
-                    <div className="line line1"></div>
-                    <div className="line line2"></div>
-                  </div>
-                  <StarRating starRating={starRating} handleStarRate={this.handleStarRate} viewOnly={true} marginLeft="15"/>
-                  <div className="space5" />
-                  <div className="holder">
-                    <div className="line line1"></div>
-                    <div className="line line2"></div>
-                  </div>
-
-                  <div className="space25" />
-                  <div className="float_time_holder">
-                    <i className="far fa-clock"></i> Prep Time:<br/>
-                    <h3> {prepTime.hrs || "0"} hr {prepTime.mins || "0"} min</h3>
-                  </div>
-                  <div className="float_time_seperator">
-                    <h1>|</h1>
-                  </div> 
-                  <div className="float_time_holder">
-                    <i className="far fa-clock"></i> Cook Time:<br/>
-                    <h3> {cookTime.hrs || "0"} hr {cookTime.mins || "0"} min</h3>
-                  </div>
-                  <div className="float_time_seperator">
-                    <h1>|</h1>
-                  </div> 
-                  <div className="float_time_holder">
-                    <i className="far fa-clock"></i> Total Time:<br/>
-                    <h3> {totalTime.hrs || "0"} hr {totalTime.mins || "0"} min</h3>
-                  </div>
-                  <div className="clear" />
-                  <div className="space25" />
-
-                  <div className="holder">
-                    <div className="line line1"></div>
-                    <div className="line line2"></div>
-                  </div>
-                  <div className="space10" />
-                  <div className="description_container_view">
-                    <span className="fancy_blockquote_holder">
-                      <i className="fas fa-quote-left"></i>
-                    </span>  
-                    {this.state.description || DescriptionPreviewText}
-                  </div>
-                  <div className="clear" />
-                  <div className="space25" />
-
-
                 </div>  
               </div>
               <div className="clear" />
@@ -290,16 +348,17 @@ class AddRecipie extends Component {
 
                <div className="add_recipie_half_container edit_main">
                 <div className="space5" />
+                <h3>Ingredients:</h3>
                 <div className="edit_un_div">
                 {this.state.ingredients.map((item, i) => {
                   return (
                   <div key={item.key} className="ing_parent_cont">
                     <div className={item.key === fadeOutKey ? 'ing_fade_out' : ''}>
                     <ExpanseDown duration="200ms">
-                      <span className="edit_span">{'Ingredient ' + (i + 1) +':'}</span>
+                      <span className="edit_span">&nbsp;</span>
                       <TextInput
                         type="text"
-                        placeholder="One of this recipie's ingredients"
+                        placeholder={i === 0 ? 'Your first ingredient...' : 'Ingredient ' + (i + 1) +'...'}
                         value={item.val}
                         valueChange={e => this.listChange('ingredients', i, e)}
                         maxLength="100"
@@ -307,6 +366,7 @@ class AddRecipie extends Component {
                       <div className="p_do">
                         <div className="">
                           <span
+                            tooltip='Add below' tooltip-position='left' tooltip-icon='true'
                             className=""
                             data-tip="Add"
                             onClick={e => this.listAddNew('ingredients', (i + 1), e)}
@@ -316,6 +376,7 @@ class AddRecipie extends Component {
                         </div>
                         <div className="">
                           <span
+                            tooltip='Remove' tooltip-position='buttom' tooltip-icon='true'
                             style={item.key === fadeOutKey ? {color: 'red'} : {}}
                             className=""
                             data-tip="Remove"
@@ -334,52 +395,22 @@ class AddRecipie extends Component {
                 </div>
               </div>
 
-              <div className="add_recipie_half_container">
-                <div className="white_tab">
-                  Ingredients Preview:
-                </div>
-                <div className="white_container">
-                  <div className="space20" />
-                  {this.state.ingredients.map((item, i) => {
-                    return (
-                      <div key={item.key.substring(1, 15)} className="ing_parent_cont_preview">
-                        <div className={item.key === fadeOutKey ? 'ing_fade_out' : ''}>
-                          <ExpanseDown duration="200ms">
-                            <div className="ing_container_view">
-                              <h3><i className="fas fa-check"></i> {item.val || item.previewText}</h3>
-                            </div>
-                            {i + 1 !== this.state.ingredients.length &&
-                              <div>
-                                <div className="space10" />
-                                <div className="holder">
-                                  <div className="line line1"></div>
-                                  <div className="line line2"></div>
-                                </div>
-                                <div className="space20" />
-                              </div>
-                            }  
-                          </ExpanseDown>
-                        </div>
-                      </div>
-                       );
-                  })}
-                  <div className="clear" />
-                </div>  
-              </div>
+              
               <div className="clear" />
 
 
               <div className="add_recipie_half_container edit_main">
                 <div className="space5" />
+                <h3>Cooking Instructions:</h3>
                 <div className="edit_un_div">
                 {this.state.directions.map((item, i) => {
                   return (
                   <div key={item.key} className="ing_parent_cont ing_desc_cont">
                     <div className={item.key === fadeOutKey ? 'ing_fade_out' : ''}>
                     <ExpanseDown duration="200ms">
-                      <span className="edit_span">{'Directions ' + (i + 1) +':'}</span>
+                      <span className="edit_span">&nbsp;</span>
                       <TextArea
-                        placeholder="The Directions for this step..."
+                        placeholder={i === 0 ? 'Your first Step...' : 'Step ' + (i + 1) +'...'}
                         value={item.val}
                         valueChange={e => this.listChange('directions', i, e)}
                         maxLength="2000"
@@ -388,6 +419,7 @@ class AddRecipie extends Component {
                       <div className="p_do">
                         <div className="">
                           <span
+                            tooltip='Add below' tooltip-position='left' tooltip-icon='true'
                             className=""
                             data-tip="Add"
                             onClick={e => this.listAddNew('directions', (i + 1), e)}
@@ -397,6 +429,7 @@ class AddRecipie extends Component {
                         </div>
                         <div className="">
                           <span
+                            tooltip='Remove' tooltip-position='buttom' tooltip-icon='true'
                             style={item.key === fadeOutKey ? {color: 'red'} : {}}
                             className=""
                             data-tip="Remove"
@@ -415,48 +448,11 @@ class AddRecipie extends Component {
                 </div>
               </div>
 
-              <div className="add_recipie_half_container">
-                <div className="white_tab">
-                  Directions Preview:
-                </div>
-                <div className="white_container">
-                  <div className="space20" />
-                  {this.state.directions.map((item, i) => {
-                    return (
-                      <div key={item.key.substring(1, 15)} className="ing_parent_cont_preview description_parent_cont_preview">
-                        <div className={item.key === fadeOutKey ? 'ing_fade_out' : ''}>
-                          <ExpanseDown duration="200ms">
-                            <div className="ing_container_view description_container_view">
-                              <h3 style={{float: 'left', marginRight: '5px'}}>
-                                <span className="fa-stack">
-                                  <span className="fas fa-circle-notch fa-stack-2x"></span>
-                                  <strong className="fas fa-stack-1x">
-                                      {i + 1}    
-                                  </strong>
-                                  </span>
-                              </h3>
-                              {item.val || item.previewText}
-                            </div>
-                            {i + 1 !== this.state.directions.length &&
-                              <div>
-                                <div className="space10" />
-                                <div className="holder">
-                                  <div className="line line1"></div>
-                                  <div className="line line2"></div>
-                                </div>
-                                <div className="space20" />
-                              </div>
-                            }  
-                          </ExpanseDown>
-                        </div>
-                      </div>
-                       );
-                  })}
-                  <div className="clear" />
-                </div>  
-              </div>
+              
               <div className="clear" />
 
+              
+              
 
 
 

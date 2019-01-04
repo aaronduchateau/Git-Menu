@@ -7,6 +7,9 @@ const userR = require('./routes/user/user-routes'),
   pswrdR = require('./routes/user/password-routes'),
   qlR = require('./routes/user/quick-login-routes')
 
+// Recipe routes
+const recipeR = require('./routes/api/recipe/recipe-routes')
+
 // Post routes
 const postR = require('./routes/api/post/post-routes'),
   getPostR = require('./routes/api/post/get-posts'),
@@ -51,6 +54,8 @@ const AppRoutes = app => {
   app.use('/api', followR)
   app.use('/api', recommendR)
   app.use('/api', favR)
+
+  app.use('/api/recipe', recipeR)
 
   app.use('/api', postR)
   app.use('/api', getPostR)
