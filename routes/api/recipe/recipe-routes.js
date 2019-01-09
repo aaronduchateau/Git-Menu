@@ -12,26 +12,40 @@ const app = require('express').Router(),
 
 // ADD RECIPIE [REQ = POST, TEST]
 app.post('/add-recipe', async (req, res) => {
+  //to do: remove log below
   console.log(req.body);
-  console.log('foooooooo!O!O!!!O!!O!O');
-  return false;
   try {
-    let { post_id, text } = req.body,
+    let { title, key, description, starRating, prepTime, cookTime, totalTime, ingredients, directions } = req.body,
       { id } = req.session,
-      comment = {
-        type: 'text',
-        text,
-        comment_by: id,
-        post_id,
-        comment_time: new Date().getTime(),
+      recipe = {
+        user_id: id,
+        uuid: key,
+        title: title,
+        description: description,
+        rating: starRating,
+        photo: '',
+        version: '1.0',
+        created_at: new Date().getTime(),
       },
-      { insertId } = await db.query('INSERT INTO recipes SET ?', comment)
-    //await User.mentionUsers(text, id, post_id, 'comment')
+      { insertId } = await db.query('INSERT INTO recipes SET ?', recipe);
+      // note: ingSampled must be array of arrays for bulk update [[],[],[]];
+      let ingSampled = ingredients.map((item, i) => { 
+        return [item.key, item.val, '1.0', i, insertId, key];
+      });
+    
+      let result = await db.query('INSERT INTO ingredients (uuid, text, version, orderv, parent_id, parent_uuid) VALUES ?', [ingSampled]);
+
+      // note: ingSampled must be array of arrays for bulk update [[],[],[]];
+      let directionsSampled = directions.map((item, i) => { 
+        return [item.key, item.val, '1.0', i, insertId, key];
+      });
+    
+      let result2 = await db.query('INSERT INTO directions (uuid, text, version, orderv, parent_id, parent_uuid) VALUES ?', [directionsSampled]);
 
     res.json({
       success: true,
-      mssg: 'Commented!!',
-      comment_id: insertId,
+      mssg: 'Recipie Created!!',
+      recipe_uuid: key,
     })
   } catch (error) {
     db.catchError(error, res)

@@ -9,7 +9,7 @@ const RecipiesRoutes = ({ url }) => (
   <div className="exp_hmm">
     <Switch>
       <Route path={`${url}`} exact component={ViewRecipie} />
-      <Route path={`${url}/add-recipie`} component={AddRecipie} />
+      <Route path={`${url}/add-recipe`} component={AddRecipie} />
       <Redirect to="/error" />
     </Switch>
   </div>
