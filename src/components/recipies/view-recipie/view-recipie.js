@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { FadeIn } from 'animate-components'
 import Title from '../../others/title'
 import { connect } from 'react-redux'
-import { getUsersToExplore } from '../../../actions/explore'
+import { getRecipe } from '../../../actions/recipe'
 import Nothing from '../../others/nothing'
 import PrimaryButton from '../../others/button/primary-btn'
 import IsLoading from '../../others/isLoading'
@@ -11,13 +11,16 @@ import classNames from 'classnames'
 import SecondHeader from '../second-header'
 import Ingredient from '../ingredient'
 import Direction from '../direction'
+import {withRouter} from 'react-router-dom';
 
 class ViewRecipie extends Component {
   state = {
     loading: true,
   }
 
-  componentDidMount = () => this.props.dispatch(getUsersToExplore())
+  componentDidMount = () => {
+    this.props.dispatch(getRecipe(this.props.location.pathname.split("/")[2]));
+  }
 
   componentWillReceiveProps = () => this.setState({ loading: false })
 
@@ -89,5 +92,5 @@ const mapStateToProps = store => ({
   users: store.Explore.users,
 })
 
-export default connect(mapStateToProps)(ViewRecipie)
+export default connect(mapStateToProps)(withRouter(ViewRecipie))
 export { ViewRecipie as PureViewRecipie }

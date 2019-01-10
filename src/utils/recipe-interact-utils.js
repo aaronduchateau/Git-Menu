@@ -58,7 +58,7 @@ export const addRecipe = async options => {
       done,
     } = obj,
     {
-      data: { mssg, success, ff },
+      data: { mssg, success, recipe_uuid },
     } = await post('/api/recipe/add-recipe', { 
       title,
       key,
@@ -71,22 +71,7 @@ export const addRecipe = async options => {
       directions })
 
   if (success) {
-    let fwing = {
-      recipe_id: ff.uuid,
-    }
-
-    //dispatch(followA.Follower(ff));
-
-    
-
-    //insta_notify({
-    //  to: user,
-    //  type: 'follow',
-    //})
-
-    done()
+    done(recipe_uuid)
   }
-
-  //Notify({ value: mssg })
 }
 

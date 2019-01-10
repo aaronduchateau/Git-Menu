@@ -3,7 +3,7 @@
  * GitHub repo: https://github.com/yTakkar/React-Instagram-Clone-2.0
  */
 
-import axios, { post } from 'axios'
+import axios, { post, get } from 'axios'
 import Notify from 'handy-notification'
 import { getUserDetails, getMutualUsers } from '../actions/user'
 import { isFollowing, getUserStats } from '../actions/follow'

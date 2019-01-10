@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import {withRouter} from 'react-router'
 import { FadeIn, ExpanseDown } from 'animate-components'
 import Title from '../../others/title'
 import { connect } from 'react-redux'
@@ -50,7 +51,13 @@ class AddRecipie extends Component {
       {val: '', previewText: "Ex: Add taco seasoning, and stir to blend.", key: guid()},
       {val: '', previewText: "Ex: Stir the shredded chicken back into the soup, and continue cooking for 2 hours", key: guid()},
     ],
-    fadeOutKey: ''
+    fadeOutKey: '',
+    done: (uuid) => { this.newRecipeRouteTransition(uuid) }
+  }
+
+  //holding this here is not ideal as it should not be part of state, but allows quick redirect without having to mess around with store.
+  newRecipeRouteTransition = (uuid) => {
+    this.props.history.push('/recipes/' + uuid);
   }
 
   componentDidMount = () => {
@@ -76,17 +83,8 @@ class AddRecipie extends Component {
 
   componentWillReceiveProps = () => this.setState({ loading: false })
 
-  handleTitleClick = (e) => {
-    e.preventDefault();
-    alert("title click");
-  }
-
   handleStarRate = (n) => {
     this.setState({starRating: n});
-  }
-
-  getEditLabel = () => {
-    return (<span><i className="fas fa-pencil-alt"/></span>);
   }
 
   getAddLabel = () => {
@@ -470,5 +468,5 @@ const mapStateToProps = store => ({
   users: store.Explore.users,
 })
 
-export default connect(mapStateToProps)(AddRecipie)
+export default connect(mapStateToProps)(withRouter(AddRecipie))
 export { AddRecipie as PureAddRecipie }
